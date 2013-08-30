@@ -25,8 +25,6 @@ Y_OFF = {BEGINNER: (SCREENHEIGHT/2)-(SQUARE*BEGINNER[1]/2),
 
 MINE = pygame.image.load('images\mine_1.png')
 FLAG = pygame.image.load('images\mflag.png')
-FIELD = (75, 103, 213)
-EMPTY = (207, 238, 245)
 DIFF_BACKGROUND = pygame.image.load('images\Capture.JPG')
 
 #Colors
@@ -42,6 +40,9 @@ DARK_RED = (169, 0, 0)
 BORDO = (81, 0, 0)
 ORANGE = (213, 106, 0)
 NUM_COLOR = (175, 226, 239)
+
+FIELD = (75, 103, 213)
+EMPTY = (207, 238, 245)
 
 FONT = pygame.font.SysFont('calibri', 25, True)
 FONT_TITLE = pygame.font.SysFont('calibri', 65, True)
@@ -202,20 +203,20 @@ class MinesweeperGUI:
 
         for cell in lines:
 
-            vertic_start = (cell[0]*SQUARE+X_OFF[self.difficulty],
+            vertical_start = (cell[0]*SQUARE+X_OFF[self.difficulty],
                             Y_OFF[self.difficulty])
 
-            vertic_end = (cell[0]*SQUARE+X_OFF[self.difficulty],
+            vertical_end = (cell[0]*SQUARE+X_OFF[self.difficulty],
                          (SQUARE*self.difficulty[1])+Y_OFF[self.difficulty])
 
-            horizon_start = (X_OFF[self.difficulty],
+            horizontal_start = (X_OFF[self.difficulty],
                             (cell[1]*SQUARE)+Y_OFF[self.difficulty])
 
-            horizon_end = (SQUARE*self.difficulty[0]+X_OFF[self.difficulty],
+            horizontal_end = (SQUARE*self.difficulty[0]+X_OFF[self.difficulty],
                           (cell[1]*SQUARE)+Y_OFF[self.difficulty])
 
-            pygame.draw.line(self.screen, BLACK, vertic_start, vertic_end)
-            pygame.draw.line(self.screen, BLACK, horizon_start, horizon_end)
+            pygame.draw.line(self.screen, BLACK, vertical_start, vertical_end)
+            pygame.draw.line(self.screen, BLACK, horizontal_start, horizontal_end)
 
     def coord_to_pixel(self, x, y):
         for cell in self.field.board:
