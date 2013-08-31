@@ -127,7 +127,7 @@ class MinesweeperGUI:
                     x, y = ((move[0]*SQUARE+X_OFF[self.difficulty],
                              move[1]*SQUARE+Y_OFF[self.difficulty]))
                     if not self.field.open(move) and \
-                        move not in self.field.flagged:
+                       move not in self.field.flagged:
                         self.screen.blit(MINE, (x, y))
                         pygame.display.update()
                         time.sleep(0.5)
@@ -179,7 +179,6 @@ class MinesweeperGUI:
             self.screen.blit(FONT.render(PRESS_2, True, WHITE), (300, 315))
             self.screen.blit(FONT.render(PRESS_3, True, WHITE), (300, 350))
             pygame.display.update()
-
 
     def draw_squares(self):
         for cell in self.field.board:
