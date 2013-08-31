@@ -1,5 +1,5 @@
 import pygame
-import Minesweeper
+import minesweeper
 from pygame.locals import *
 import time
 
