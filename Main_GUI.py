@@ -25,6 +25,8 @@ Y_OFF = {BEGINNER: (SCREENHEIGHT/2)-(SQUARE*BEGINNER[1]/2),
 
 MINE = pygame.image.load('images\mine_1.png')
 FLAG = pygame.image.load('images\mflag.png')
+FIELD = (75, 103, 213)
+EMPTY = (207, 238, 245)
 DIFF_BACKGROUND = pygame.image.load('images\Capture.JPG')
 
 #Colors
@@ -40,9 +42,6 @@ DARK_RED = (169, 0, 0)
 BORDO = (81, 0, 0)
 ORANGE = (213, 106, 0)
 NUM_COLOR = (175, 226, 239)
-
-FIELD = (75, 103, 213)
-EMPTY = (207, 238, 245)
 
 FONT = pygame.font.SysFont('calibri', 25, True)
 FONT_TITLE = pygame.font.SysFont('calibri', 65, True)
@@ -85,15 +84,7 @@ class MinesweeperGUI:
         self.select_difficulty()
 
         while True:
-            mines_left_number = len(self.field.mines)-len(self.field.flagged)
-            mines_left = 'Mines Left: '+str(mines_left_number)
-            self.screen.blit(self.background, (0, 0))
-            self.screen.blit(FONT_TITLE.render(TITLE, True, WHITE), (200, 15))
-            self.screen.blit(FONT.render(mines_left, True, WHITE), (20, 40))
-            self.draw_squares()
-            self.draw_lines()
-            self.clock.tick(100)
-            pygame.display.update()
+            self.start_game()
 
             if self.field.check_for_win() is True:
                 self.draw_squares()
@@ -103,46 +94,62 @@ class MinesweeperGUI:
                 break
 
             for event in pygame.event.get():
-                escape = event.type == KEYDOWN and event.key == K_ESCAPE
-                if event.type == QUIT or escape:
-                    exit()
-
-                elif event.type == KEYDOWN:
-                    if event.key == K_r:
-                        self.restart()
-
-                elif event.type == MOUSEBUTTONUP:
-                    move = self.coord_to_pixel(event.pos[0], event.pos[1])
-                    if move:
-                        if event.button == 1 and \
-                           move not in self.field.opened:
-                            x, y = ((move[0]*SQUARE+X_OFF[self.difficulty],
-                                     move[1]*SQUARE+Y_OFF[self.difficulty]))
-                            if not self.field.open(move) and \
-                                    move not in self.field.flagged:
-                                self.screen.blit(MINE, (x, y))
-                                pygame.display.update()
-                                time.sleep(0.5)
-                                self.show_mines(move)
-                                time.sleep(1)
-                                pygame.display.update()
-                                self.play_again()
-                                return False
-                            else:
-                                if self.smart_player is True:
-                                    self.field.smart_open(move)
-                                else:
-                                    self.field.open(move)
-
-                        if event.button == 3:
-                            if move in self.field.flagged:
-                                self.field.flagged.remove(move)
-                            elif move not in self.field.opened:
-                                if self.smart_player is True:
-                                    self.field.smart_flag(move)
-                                else:
-                                    self.field.flag(move)
+                self.quit_restart(event)
+                self.move_play(event)
         self.win()
+
+    def start_game(self):
+        mines_left_number = len(self.field.mines)-len(self.field.flagged)
+        mines_left = 'Mines Left: '+str(mines_left_number)
+        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(FONT_TITLE.render(TITLE, True, WHITE), (200, 15))
+        self.screen.blit(FONT.render(mines_left, True, WHITE), (20, 40))
+        self.draw_squares()
+        self.draw_lines()
+        self.clock.tick(100)
+        pygame.display.update()
+
+    def quit_restart(self, event):
+        escape = event.type == KEYDOWN and event.key == K_ESCAPE
+        if event.type == QUIT or escape:
+            exit()
+
+        elif event.type == KEYDOWN:
+            if event.key == K_r:
+                self.restart()
+
+    def move_play(self, event):
+        if event.type == MOUSEBUTTONUP:
+            move = self.coord_to_pixel(event.pos[0], event.pos[1])
+            if move:
+                if event.button == 1 and \
+                   move not in self.field.opened:
+                    x, y = ((move[0]*SQUARE+X_OFF[self.difficulty],
+                             move[1]*SQUARE+Y_OFF[self.difficulty]))
+                    if not self.field.open(move) and \
+                        move not in self.field.flagged:
+                        self.screen.blit(MINE, (x, y))
+                        pygame.display.update()
+                        time.sleep(0.5)
+                        self.show_mines(move)
+                        time.sleep(1)
+                        pygame.display.update()
+                        self.play_again()
+                        return False
+                    else:
+                        if self.smart_player is True:
+                            self.field.smart_open(move)
+                        else:
+                            self.field.open(move)
+
+                if event.button == 3:
+                    if move in self.field.flagged:
+                        self.field.flagged.remove(move)
+                    elif move not in self.field.opened:
+                        if self.smart_player is True:
+                            self.field.smart_flag(move)
+                        else:
+                            self.field.flag(move)
 
     def select_difficulty(self):
         """Player can choose game's difficulty"""
@@ -172,6 +179,7 @@ class MinesweeperGUI:
             self.screen.blit(FONT.render(PRESS_2, True, WHITE), (300, 315))
             self.screen.blit(FONT.render(PRESS_3, True, WHITE), (300, 350))
             pygame.display.update()
+
 
     def draw_squares(self):
         for cell in self.field.board:
@@ -203,20 +211,20 @@ class MinesweeperGUI:
 
         for cell in lines:
 
-            vertical_start = (cell[0]*SQUARE+X_OFF[self.difficulty],
+            vertic_start = (cell[0]*SQUARE+X_OFF[self.difficulty],
                             Y_OFF[self.difficulty])
 
-            vertical_end = (cell[0]*SQUARE+X_OFF[self.difficulty],
+            vertic_end = (cell[0]*SQUARE+X_OFF[self.difficulty],
                          (SQUARE*self.difficulty[1])+Y_OFF[self.difficulty])
 
-            horizontal_start = (X_OFF[self.difficulty],
+            horizon_start = (X_OFF[self.difficulty],
                             (cell[1]*SQUARE)+Y_OFF[self.difficulty])
 
-            horizontal_end = (SQUARE*self.difficulty[0]+X_OFF[self.difficulty],
+            horizon_end = (SQUARE*self.difficulty[0]+X_OFF[self.difficulty],
                           (cell[1]*SQUARE)+Y_OFF[self.difficulty])
 
-            pygame.draw.line(self.screen, BLACK, vertical_start, vertical_end)
-            pygame.draw.line(self.screen, BLACK, horizontal_start, horizontal_end)
+            pygame.draw.line(self.screen, BLACK, vertic_start, vertic_end)
+            pygame.draw.line(self.screen, BLACK, horizon_start, horizon_end)
 
     def coord_to_pixel(self, x, y):
         for cell in self.field.board:
