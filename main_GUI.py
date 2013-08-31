@@ -122,8 +122,13 @@ class MinesweeperGUI:
         if event.type == MOUSEBUTTONUP:
             move = self.coord_to_pixel(event.pos[0], event.pos[1])
             if move:
-                if event.button == 1 and \
-                   move not in self.field.opened:
+                self.open_field(event)
+                self.flag_field(event)
+
+    def open_field(self, event):
+        move = self.coord_to_pixel(event.pos[0], event.pos[1])
+        if event.button == 1 and \
+           move not in self.field.opened:
                     x, y = ((move[0]*SQUARE+X_OFF[self.difficulty],
                              move[1]*SQUARE+Y_OFF[self.difficulty]))
                     if not self.field.open(move) and \
@@ -142,14 +147,16 @@ class MinesweeperGUI:
                         else:
                             self.field.open(move)
 
-                if event.button == 3:
-                    if move in self.field.flagged:
-                        self.field.flagged.remove(move)
-                    elif move not in self.field.opened:
-                        if self.smart_player is True:
-                            self.field.smart_flag(move)
-                        else:
-                            self.field.flag(move)
+    def flag_field(self, event):
+        move = self.coord_to_pixel(event.pos[0], event.pos[1])
+        if event.button == 3:
+            if move in self.field.flagged:
+                self.field.flagged.remove(move)
+            elif move not in self.field.opened:
+                if self.smart_player is True:
+                    self.field.smart_flag(move)
+                else:
+                    self.field.flag(move)
 
     def select_difficulty(self):
         """Player can choose game's difficulty"""
