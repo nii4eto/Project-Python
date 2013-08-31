@@ -160,15 +160,15 @@ class MinesweeperGUI:
                     exit()
                 elif event.type == KEYDOWN:
                     if event.key == K_KP1 or event.key == K_1:
-                        self.field = Minesweeper.Minesweeper(BEGINNER)
+                        self.field = minesweeper.Minesweeper(BEGINNER)
                         self.difficulty = BEGINNER
                         return
                     if event.key == K_KP2 or event.key == K_2:
-                        self.field = Minesweeper.Minesweeper(INTERMEDIATE)
+                        self.field = minesweeper.Minesweeper(INTERMEDIATE)
                         self.difficulty = INTERMEDIATE
                         return
                     if event.key == K_KP3 or event.key == K_3:
-                        self.field = Minesweeper.Minesweeper(ADVANCED)
+                        self.field = minesweeper.Minesweeper(ADVANCED)
                         self.difficulty = ADVANCED
                         return
 
